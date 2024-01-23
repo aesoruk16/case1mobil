@@ -17,6 +17,8 @@ class BaseStore {
   cart = [];
   products = [];
   selectedSort = null;
+  searchText = '';
+
   selectedBrands = [];
   selectedModel = [];
   defaultBrands = [];
@@ -31,7 +33,7 @@ class BaseStore {
   async init() {
     await this.getProducts();
     this.getFilterItem();
-
+    this.SearchBox(1, '', 'name');
     this.getCart();
   }
   async getCart() {
@@ -100,6 +102,8 @@ class BaseStore {
       maximumFractionDigits: 2,
     });
   }
+
+  @action
   SearchBox(type = null, search = null, filter) {
     console.log(type, search);
     var data = null;
@@ -107,12 +111,28 @@ class BaseStore {
       const regex = new RegExp(_.escapeRegExp(searchTerm), 'i');
       return regex.test(value);
     };
+    this.search = search;
     switch (type) {
       case 1:
         data = _.filter(this.productsBaseData, (item) =>
           like(item[filter], search),
         );
-        this.products = data;
+        // alert(data.length);
+        // console.log("filterData:"+data.length);
+
+        if (search == '') {
+          productStore.visibleProducts = [];
+          productStore.currentPage = 1;
+          productStore.loadProducts();
+        } else {
+          productStore.visibleProducts = data;
+        }
+        // productStore.visibleProducts = [];
+
+        // // productStore.visibleProducts = data.reverse();
+        // productStore.currentPage = 2;
+        //productStore.handleLoadMore();
+        // productStore.loadProducts();
         this.ResetFilter();
         break;
       case 2:
@@ -134,6 +154,7 @@ class BaseStore {
 
   filter() {
     let filterData = [];
+    // alert(this.selectedSort)
     switch (this.selectedSort) {
       case 1:
         filterData = _.sortBy(this.productsBaseData, ['createdAt']).reverse();
@@ -169,7 +190,11 @@ class BaseStore {
     } else {
       filterData = filterData;
     }
+    productStore.visibleProducts = [];
+    productStore.visibleProducts = filterData;
     this.products = filterData;
+    // productStore.currentPage = 1;
+    // productStore.loadProducts();
   }
   getProductsSlice(start, end) {
     return this.products.slice(start, end);
@@ -198,6 +223,8 @@ class BaseStore {
     }
   }
 
+  
+
   addToCart(product, type = null) {
     var existingProductIndex = this.cart.findIndex(
       (item) => item.id === product.id,
@@ -221,7 +248,18 @@ class BaseStore {
 
     this.saveCartToLocalStorage();
   }
+  controlFilter(varB, item, name) {
+    console.log('controlFilter' + varB);
+    if (this[varB]) {
+      const itemKey = item[name];
 
+      if (itemKey && this[varB].includes(itemKey)) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
   addToFavorites(product, type = null) {
     var existingProductIndex = this.products.findIndex(
       (item) => item.id === product.id,

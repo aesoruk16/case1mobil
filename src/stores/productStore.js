@@ -22,11 +22,18 @@ class ProductStore {
   loadProducts(custom = null) {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-    const additionalProducts = baseStore.getProductsSlice(start, end);
+    const totalPages = baseStore.productsBaseData.length / this.itemsPerPage;
+    if (this.currentPage <= totalPages) {
+      const additionalProducts = baseStore.getProductsSlice(start, end);
 
-    this.visibleProducts = [...this.visibleProducts, ...additionalProducts];
-    console.log(toJS(this.visibleProducts));
-    this.isLoading = false;
+      this.visibleProducts = [...this.visibleProducts, ...additionalProducts];
+      console.log(toJS(this.visibleProducts));
+      this.isLoading = false;
+
+      this.currentPage++;
+    } else {
+      console.log(this.currentPage);
+    }
   }
   @action('loadProducts')
   getFavoriteProducts() {

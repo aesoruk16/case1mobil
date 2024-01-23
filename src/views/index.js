@@ -18,11 +18,11 @@ class index extends Component {
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header />
-        <SearcBox />
+        <SearcBox type={1} filter={'name'} />
         <FilterContainer />
-        
-          <Products />
-        
+
+        <Products />
+
         <Menu />
       </SafeAreaView>
     );

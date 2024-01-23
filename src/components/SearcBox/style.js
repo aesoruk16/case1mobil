@@ -21,12 +21,18 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 15,
     height: 40,
+    flex: 1,
     paddingLeft: 5,
     color: settings.primaryTextColor,
   },
   logoText: {
     color: settings.primaryTextColor,
     fontSize: 25,
+  },
+  boxIconRight: {
+    width: 40,
+    alignContent: 'center',
+    alignItems: 'center',
   },
 });
 

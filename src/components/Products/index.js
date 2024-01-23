@@ -11,6 +11,7 @@ import {observer} from 'mobx-react';
 import ProductItem from '../ProductItem';
 import styles from '../Products/style';
 import productStore from '../../stores/productStore';
+import baseStore from '../../stores/base';
 
 const Products = ({custom}) => {
   const scrollViewRef = useRef(null);
@@ -40,8 +41,8 @@ const Products = ({custom}) => {
       <ScrollView
         ref={scrollViewRef}
         onScroll={({nativeEvent}) => {
-          if (handleScroll(nativeEvent)) {
-            productStore.loadProducts(custom);
+          if (handleScroll(nativeEvent) && baseStore.search == '') {
+            productStore.handleLoadMore(custom);
           }
         }}
         scrollEventThrottle={400}>
